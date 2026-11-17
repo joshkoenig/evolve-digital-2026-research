@@ -4,10 +4,11 @@
  * @file
  * Local-only: expose every available Tool API tool over the site's MCP server.
  *
- * Enables MCP Server, the Tool API bridge, Tool Belt, Canvas Tools and (when
- * present as a dev dependency) Tool Shop, then creates one bridge mapping per
- * tool so an MCP client can do content modelling, content, Canvas page
- * building and raw configuration work.
+ * Enables MCP Server, the Tool API bridge, Tool Belt, Canvas Tools, parts of
+ * MCP Tools and (when present as a dev dependency) Tool Shop, then creates
+ * one bridge mapping per tool so an MCP client can do content modelling,
+ * content, media, Views, menus, Canvas page building and raw configuration
+ * work.
  *
  * This includes write and delete tools with no OAuth in front of them, so it
  * is meant for a throwaway local database and refuses to run on Pantheon.
@@ -40,6 +41,17 @@ $wanted = [
   'tool_shop_config',
   'tool_shop_module',
   'tool_shop_system',
+  // MCP Tools as a Tool API library (its own transports stay off): media
+  // upload and remote fetch, Views, menus, blocks, webforms, theme settings.
+  'mcp_tools',
+  'mcp_tools_media',
+  'mcp_tools_remote_media',
+  'mcp_tools_views',
+  'mcp_tools_menus',
+  'mcp_tools_blocks',
+  'mcp_tools_webform',
+  'mcp_tools_theme',
+  'mcp_tools_structure',
 ];
 
 $available = \Drupal::service('extension.list.module')->getList();
@@ -56,6 +68,14 @@ foreach ($wanted as $module) {
 if ($install) {
   \Drupal::service('module_installer')->install($install);
   print 'Enabled: ' . implode(', ', $install) . "\n";
+}
+
+// MCP Tools gives connections read scope only by default, which makes every
+// one of its write tools answer "Access denied". Allow writes locally.
+if (isset($available['mcp_tools'])) {
+  \Drupal::configFactory()->getEditable('mcp_tools.settings')
+    ->set('access.default_scopes', ['read', 'write'])
+    ->save();
 }
 
 // Module installation rebuilt the container; fetch services fresh.

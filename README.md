@@ -35,10 +35,15 @@ ddev site-setup
 
 `ddev site-setup` runs `composer install`, installs Drupal from the Convivial
 Gov site template, then runs `scripts/mcp-local-setup.php`, which enables MCP
-Server, the Tool API bridge, Tool Belt, Canvas Tools and Tool Shop and exposes
-every tool they provide (77 at the time of writing): content types and fields,
-content, moderation, image styles, Canvas pages and templates, raw
+Server, the Tool API bridge, Tool Belt, Canvas Tools, parts of MCP Tools and
+Tool Shop and exposes every tool they provide (about 160 at the time of
+writing): content types and fields, content, media upload, Views, menus,
+blocks, webforms, moderation, image styles, Canvas pages and templates, raw
 configuration and module install. It is safe to re-run.
+
+MCP Tools is used as a tool library only. Its declared dependency ranges lag
+behind MCP Server 2.0 and Drupal CMS, so `composer.json` aliases `mcp/sdk` and
+`enshrined/svg-sanitize` to let it install; its own transports are not used.
 
 Then register the stdio server with your MCP client, using this repo's
 absolute path:
