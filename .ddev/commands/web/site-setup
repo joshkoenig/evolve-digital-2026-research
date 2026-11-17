@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+## Description: Install the site locally and expose its site-building tools over MCP
+## Usage: site-setup
+## Example: "ddev site-setup"
+
+set -euo pipefail
+cd /var/www/html
+
+composer install --no-interaction
+
+if drush status --field=bootstrap 2>/dev/null | grep -q Successful; then
+  echo "Drupal is already installed; keeping the existing database."
+else
+  drush site:install ../recipes/convivial_gov --account-name=admin --site-name="Evolve Digital 2026 Research" -y
+fi
+
+drush php:script ../scripts/mcp-local-setup.php
+
+echo
+echo "One-time login link for the admin account:"
+drush user:login

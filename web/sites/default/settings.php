@@ -46,6 +46,19 @@ include \Pantheon\Integrations\Assets::dir() . "/settings.pantheon.php";
 // $settings['skip_permissions_hardening'] = TRUE;
 
 /**
+ * Local development with DDEV. DDEV writes settings.ddev.php (git-ignored)
+ * with the database connection. Tool Shop's developer-only tools are opened
+ * here and nowhere else; the module is a dev dependency and its gate stays
+ * closed on Pantheon.
+ */
+if (getenv('IS_DDEV_PROJECT') == 'true') {
+  if (file_exists(__DIR__ . '/settings.ddev.php')) {
+    include __DIR__ . '/settings.ddev.php';
+  }
+  $settings['tool_shop_enabled'] = TRUE;
+}
+
+/**
  * If there is a local settings file, then include it
  */
 $local_settings = __DIR__ . "/settings.local.php";

@@ -97,3 +97,6 @@
 #/.env
 
 /patches.lock.json
+
+# DDEV local development
+/web/sites/*/settings.ddev.php
