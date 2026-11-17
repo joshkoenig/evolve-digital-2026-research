@@ -100,3 +100,4 @@
 
 # DDEV local development
 /web/sites/*/settings.ddev.php
+/.ddev/mcp-sync.*
