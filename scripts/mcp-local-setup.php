@@ -54,7 +54,11 @@ $wanted = [
   'mcp_tools_structure',
 ];
 
-$available = \Drupal::service('extension.list.module')->getList();
+// The module list is cached, so a module Composer has only just downloaded is
+// invisible until the list is rebuilt.
+$extension_list = \Drupal::service('extension.list.module');
+$extension_list->reset();
+$available = $extension_list->getList();
 $handler = \Drupal::moduleHandler();
 $install = [];
 foreach ($wanted as $module) {
