@@ -7,7 +7,13 @@
 set -euo pipefail
 cd /var/www/html
 
-composer install --no-interaction
+# composer.lock is not committed, so after a pull that changes composer.json a
+# local lock file is stale and "composer install" refuses to run. Fall back to
+# resolving again.
+if ! composer install --no-interaction; then
+  echo "composer.lock is out of date with composer.json; running composer update."
+  composer update --no-interaction
+fi
 
 if drush status --field=bootstrap 2>/dev/null | grep -q Successful; then
   echo "Drupal is already installed; keeping the existing database."
